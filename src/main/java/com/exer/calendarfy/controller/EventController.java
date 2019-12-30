@@ -8,6 +8,8 @@ import com.exer.calendarfy.push.PushRequest;
 import com.exer.calendarfy.response.BaseResponse;
 import com.exer.calendarfy.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 
 @RestController
 public class EventController {
@@ -27,9 +28,9 @@ public class EventController {
     FCMPush fcmPush;
 
     @GetMapping("/getEventsForProfile")
-    public ArrayList<Event> getEventsForProfile(@RequestHeader(value = "profileEmail") String profileEmail) {
-        BaseResponse response = new Response();
-
+    public ResponseEntity<ArrayList<Event>> getEventsForProfile(
+            @RequestHeader(value = "profileEmail") String profileEmail
+    ) {
         UserProfile profile = profileCrud.getProfileByEmail(profileEmail);
 
         if (profile == null) {
@@ -37,11 +38,11 @@ public class EventController {
             return null;
         }
 
-        return profile.getProfileEvents();
+        return ResponseEntity.status(HttpStatus.OK).body(profile.getProfileEvents());
     }
 
     @PostMapping("/addEventForProfile")
-    public HashMap<String, String> addEventForProfile(
+    public ResponseEntity<HashMap<String, String>> addEventForProfile(
             @RequestHeader(value = "profileEmail") String profileEmail,
             @RequestHeader(value = "eventTitle") String eventTitle,
             @RequestHeader(value = "eventDesc") String eventDesc,
@@ -64,11 +65,11 @@ public class EventController {
         }
 
         response.setIsSuccessful(true);
-        return response.getResponse();
+        return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 
     @PostMapping("/deleteEventForProfile")
-    public HashMap<String, String> deleteEventForProfile(
+    public ResponseEntity<HashMap<String, String>> deleteEventForProfile(
             @RequestHeader(value = "profileEmail") String profileEmail,
             @RequestHeader(value = "eventTitle") String eventTitle,
             @RequestHeader(value = "eventDesc") String eventDesc
@@ -79,6 +80,6 @@ public class EventController {
         profileCrud.deleteEventForProfile(profileEmail, event);
 
         response.setIsSuccessful(true);
-        return response.getResponse();
+        return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 }

@@ -5,6 +5,8 @@ import com.exer.calendarfy.profile.ProfileCrud;
 import com.exer.calendarfy.response.BaseResponse;
 import com.exer.calendarfy.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -20,7 +22,7 @@ public class ProfileController {
     ProfileCrud profileCrud;
 
     @PostMapping("/updateProfile")
-    public HashMap<String, String> registerProfile (
+    public ResponseEntity<HashMap<String, String>> registerProfile (
             @RequestHeader(value = "profileEmail") String profileEmail,
             @RequestHeader(value = "deviceToken") String deviceToken
     ) {
@@ -29,11 +31,11 @@ public class ProfileController {
         profileCrud.updateProfile(profileEmail, deviceToken);
 
         response.setIsSuccessful(true);
-        return response.getResponse();
+        return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 
     @GetMapping("/getAllProfiles")
-    public List<UserProfile> getAllProfile() {
-        return profileCrud.getAllProfiles();
+    public ResponseEntity<List<UserProfile>> getAllProfile() {
+        return ResponseEntity.status(HttpStatus.OK).body(profileCrud.getAllProfiles());
     }
 }

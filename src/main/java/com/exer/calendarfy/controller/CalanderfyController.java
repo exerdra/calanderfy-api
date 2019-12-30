@@ -2,6 +2,8 @@ package com.exer.calendarfy.controller;
 
 import com.exer.calendarfy.response.BaseResponse;
 import com.exer.calendarfy.response.Response;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,13 +15,13 @@ import java.util.HashMap;
 public class CalanderfyController {
 
     @RequestMapping("/healthcheck")
-    public HashMap<String, String> healthcheck() {
+    public ResponseEntity<HashMap<String, String>> healthcheck() {
         BaseResponse response = new Response();
         RuntimeMXBean mxBean = ManagementFactory.getRuntimeMXBean();
 
         response.addResponseHeader("uptime", String.valueOf(mxBean.getUptime()));
         response.setIsSuccessful(true);
 
-        return response.getResponse();
+        return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 }
