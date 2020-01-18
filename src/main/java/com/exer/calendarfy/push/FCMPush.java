@@ -1,5 +1,6 @@
 package com.exer.calendarfy.push;
 
+import com.exer.calendarfy.log.Log;
 import com.exer.calendarfy.retry.RetryQueue;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -24,10 +25,10 @@ public class FCMPush implements BasePush {
             Response response;
             try {
                 response = httpClient.newCall(request).execute();
-                System.out.println("Posted to Sender with response: " + response);
+                Log.d("Posted to Sender with response: " + response);
                 response.close();
             } catch (IOException e) {
-                System.out.println("Failed to post message to sender: " + e);
+                Log.d("Failed to post message to sender: " + e);
                 RetryQueue.getInstance().addMessageToQueue(pushRequest);
             }
         }).start();

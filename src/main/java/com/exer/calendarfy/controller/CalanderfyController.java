@@ -1,5 +1,6 @@
 package com.exer.calendarfy.controller;
 
+import com.exer.calendarfy.log.Log;
 import com.exer.calendarfy.response.BaseResponse;
 import com.exer.calendarfy.response.Response;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,8 @@ public class CalanderfyController {
 
         response.addResponseHeader("uptime", String.valueOf(mxBean.getUptime()));
         response.setIsSuccessful(true);
+
+        Log.d("Server Uptime: " + mxBean.getUptime());
 
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }

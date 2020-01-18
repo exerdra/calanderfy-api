@@ -1,7 +1,9 @@
-package com.exer.calendarfy.dao;
+package com.exer.calendarfy.dao.custom;
 
-import com.exer.calendarfy.data.Event;
-import com.exer.calendarfy.data.UserProfile;
+import com.exer.calendarfy.dao.custom.CustomProfileRepo;
+import com.exer.calendarfy.model.Event;
+import com.exer.calendarfy.model.UserProfile;
+import com.exer.calendarfy.log.Log;
 import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,7 +40,7 @@ public class CustomProfileRepoImpl implements CustomProfileRepo {
         update.set("profileEvents", updatedEventList);
         UpdateResult result = template.updateFirst(query, update, UserProfile.class);
 
-        System.out.println(result);
+        Log.d(result.toString());
     }
 
     @Override
@@ -46,6 +48,29 @@ public class CustomProfileRepoImpl implements CustomProfileRepo {
         Query query = new Query(Criteria.where("profileEmail").is(profile.getProfileEmail()));
         Update update = new Update();
         update.set("deviceToken", deviceToken);
+
+        template.updateFirst(query, update, UserProfile.class);
+    }
+
+    @Override
+    public void updateProfileWithAuthorizedEmail(UserProfile profile, String authorizedEmail) {
+        Query query = new Query(Criteria.where("profileEmail").is(profile.getProfileEmail()));
+        Update update = new Update();
+        ArrayList<String> updatedEventList = profile.getAuthorizedUsers();
+        updatedEventList.add(authorizedEmail);
+
+        update.set("authorizedUsers", updatedEventList);
+
+        template.updateFirst(query, update, UserProfile.class);
+    }
+
+    @Override
+    public void deleteAuthorizedUser(UserProfile profile, String authorizedEmail) {
+        Query query = new Query(Criteria.where("profileEmail").is(profile.getProfileEmail()));
+        Update update = new Update();
+        ArrayList<String> updatedEventList = profile.getAuthorizedUsers();
+        updatedEventList.remove(authorizedEmail);
+        update.set("authorizedUsers", updatedEventList);
 
         template.updateFirst(query, update, UserProfile.class);
     }

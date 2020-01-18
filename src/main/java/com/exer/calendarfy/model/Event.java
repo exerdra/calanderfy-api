@@ -1,4 +1,4 @@
-package com.exer.calendarfy.data;
+package com.exer.calendarfy.model;
 
 public class Event {
     private String eventTitle;

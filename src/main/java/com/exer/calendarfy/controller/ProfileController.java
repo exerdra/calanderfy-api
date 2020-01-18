@@ -1,16 +1,14 @@
 package com.exer.calendarfy.controller;
 
-import com.exer.calendarfy.data.UserProfile;
+import com.exer.calendarfy.model.UserProfile;
+import com.exer.calendarfy.log.Log;
 import com.exer.calendarfy.profile.ProfileCrud;
 import com.exer.calendarfy.response.BaseResponse;
 import com.exer.calendarfy.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,11 +19,14 @@ public class ProfileController {
     @Autowired
     ProfileCrud profileCrud;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/updateProfile")
     public ResponseEntity<HashMap<String, String>> registerProfile (
             @RequestHeader(value = "profileEmail") String profileEmail,
             @RequestHeader(value = "deviceToken") String deviceToken
     ) {
+        Log.d("Updating profile: " + profileEmail + " with token: " + deviceToken);
+
         BaseResponse response = new Response();
 
         profileCrud.updateProfile(profileEmail, deviceToken);
@@ -34,6 +35,7 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getAllProfiles")
     public ResponseEntity<List<UserProfile>> getAllProfile() {
         return ResponseEntity.status(HttpStatus.OK).body(profileCrud.getAllProfiles());

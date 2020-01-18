@@ -1,7 +1,8 @@
 package com.exer.calendarfy.controller;
 
-import com.exer.calendarfy.data.Event;
-import com.exer.calendarfy.data.UserProfile;
+import com.exer.calendarfy.model.Event;
+import com.exer.calendarfy.model.UserProfile;
+import com.exer.calendarfy.log.Log;
 import com.exer.calendarfy.profile.ProfileCrud;
 import com.exer.calendarfy.push.FCMPush;
 import com.exer.calendarfy.push.PushRequest;
@@ -10,10 +11,7 @@ import com.exer.calendarfy.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,20 +25,24 @@ public class EventController {
     @Autowired
     FCMPush fcmPush;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getEventsForProfile")
     public ResponseEntity<ArrayList<Event>> getEventsForProfile(
             @RequestHeader(value = "profileEmail") String profileEmail
     ) {
+        Log.d("Getting events for profile: " + profileEmail);
+
         UserProfile profile = profileCrud.getProfileByEmail(profileEmail);
 
         if (profile == null) {
-            System.out.println("No profile found for given email");
+            Log.d("No profile found for given email: " + profileEmail);
             return null;
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(profile.getProfileEvents());
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/addEventForProfile")
     public ResponseEntity<HashMap<String, String>> addEventForProfile(
             @RequestHeader(value = "profileEmail") String profileEmail,
@@ -48,6 +50,7 @@ public class EventController {
             @RequestHeader(value = "eventDesc") String eventDesc,
             @RequestHeader(value = "sendPush", required = false) Boolean shouldSendPush
     ) {
+        Log.d("Adding event: " + eventTitle + " for profile : " + profileEmail);
         BaseResponse response = new Response();
         Event event = new Event(eventTitle, eventDesc);
 
@@ -60,7 +63,7 @@ public class EventController {
                 PushRequest request = new PushRequest(profile.getDeviceToken(), event);
                 fcmPush.sendPushToSender(request);
             } else {
-                System.out.println("Unable to send push as profile does not exist or device token is null");
+                Log.d("Unable to send push as profile does not exist or device token is null");
             }
         }
 
@@ -68,12 +71,15 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/deleteEventForProfile")
     public ResponseEntity<HashMap<String, String>> deleteEventForProfile(
             @RequestHeader(value = "profileEmail") String profileEmail,
             @RequestHeader(value = "eventTitle") String eventTitle,
             @RequestHeader(value = "eventDesc") String eventDesc
     ) {
+        Log.d("Deleting event: " + eventTitle + " for profile: " + profileEmail);
+
         BaseResponse response = new Response();
         Event event = new Event(eventTitle, eventDesc);
 

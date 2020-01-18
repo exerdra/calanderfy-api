@@ -1,6 +1,6 @@
 package com.exer.calendarfy.push;
 
-import com.exer.calendarfy.data.Event;
+import com.exer.calendarfy.model.Event;
 
 public class PushRequest {
     private String deviceToken;

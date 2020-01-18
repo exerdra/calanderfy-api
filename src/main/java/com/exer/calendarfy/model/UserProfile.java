@@ -1,4 +1,4 @@
-package com.exer.calendarfy.data;
+package com.exer.calendarfy.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,12 +11,22 @@ public class UserProfile {
     private String id;
 
     private String profileEmail;
-    private ArrayList<Event> profileEvents = new ArrayList<>();
+    private ArrayList<Event> profileEvents;
+
+    private ArrayList<String> authorizedUsers = new ArrayList<>();
     private String deviceToken;
 
     public UserProfile(String profileEmail, ArrayList<Event> profileEvents) {
         this.profileEmail = profileEmail;
         this.profileEvents = profileEvents;
+    }
+
+    public ArrayList<String> getAuthorizedUsers() {
+        return authorizedUsers;
+    }
+
+    public void setAuthorizedUsers(ArrayList<String> authorizedUsers) {
+        this.authorizedUsers = authorizedUsers;
     }
 
     public void addEvent(Event event) {

@@ -1,9 +1,10 @@
 package com.exer.calendarfy.profile;
 
-import com.exer.calendarfy.dao.CustomProfileRepo;
-import com.exer.calendarfy.dao.ProfileRepository;
-import com.exer.calendarfy.data.Event;
-import com.exer.calendarfy.data.UserProfile;
+import com.exer.calendarfy.dao.custom.CustomProfileRepo;
+import com.exer.calendarfy.dao.profile.ProfileRepository;
+import com.exer.calendarfy.model.Event;
+import com.exer.calendarfy.model.UserProfile;
+import com.exer.calendarfy.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +30,10 @@ public class ProfileCrudImpl implements ProfileCrud {
         UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
 
         if (profile == null) {
-            System.out.println("No profile found for given email, creating new profile");
+            Log.d("No profile found for given email, creating new profile");
             createProfileWithEvent(profileEmail, event);
         } else {
-            System.out.println("Adding event to profile");
+            Log.d("Adding event to profile");
             addEventToProfile(profile, event);
         }
     }
@@ -42,10 +43,10 @@ public class ProfileCrudImpl implements ProfileCrud {
         UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
 
         if (profile == null) {
-            System.out.println("No profile found for given email, creating new profile");
+            Log.d("No profile found for given email, creating new profile");
             registerNewProfile(profileEmail, deviceToken);
         } else {
-            System.out.println("Updating device token to profile");
+            Log.d("Updating device token to profile");
             updateDeviceToken(profile, deviceToken);
         }
     }
@@ -60,10 +61,34 @@ public class ProfileCrudImpl implements ProfileCrud {
         UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
 
         if (profile == null) {
-            System.out.println("No profile found for given email");
+            Log.d("No profile found for given email");
         } else {
-            System.out.println("Removing event for profile");
+            Log.d("Removing event for profile");
             deleteEvent(profile, event);
+        }
+    }
+
+    @Override
+    public void addAuthorizedUserForProfile(String profileEmail, String authorizedEmail) {
+        UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
+
+        if (profile == null) {
+            Log.d("No profile found for given email");
+        } else {
+            Log.d("Adding authorized user");
+            addAuthorizedUser(profile, authorizedEmail);
+        }
+    }
+
+    @Override
+    public void deleteAuthorizedUser(String profileEmail, String authorizedEmail) {
+        UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
+
+        if (profile == null) {
+            Log.d("No profile found for given email");
+        } else {
+            Log.d("Delete authorized user");
+            deleteAuthorizedUser(profile, authorizedEmail);
         }
     }
 
@@ -93,5 +118,13 @@ public class ProfileCrudImpl implements ProfileCrud {
 
     private void addEventToProfile(UserProfile profile, Event event) {
         customProfileRepo.updateProfileWithEvent(profile, event);
+    }
+
+    private void addAuthorizedUser(UserProfile profile, String authorizedUser) {
+        customProfileRepo.updateProfileWithAuthorizedEmail(profile, authorizedUser);
+    }
+
+    private void deleteAuthorizedUser(UserProfile profile, String authorizedUser) {
+        customProfileRepo.deleteAuthorizedUser(profile, authorizedUser);
     }
 }
