@@ -1,6 +1,5 @@
 package com.exer.calendarfy.dao.custom;
 
-import com.exer.calendarfy.dao.custom.CustomProfileRepo;
 import com.exer.calendarfy.model.Event;
 import com.exer.calendarfy.model.UserProfile;
 import com.exer.calendarfy.log.Log;
@@ -71,6 +70,28 @@ public class CustomProfileRepoImpl implements CustomProfileRepo {
         ArrayList<String> updatedEventList = profile.getAuthorizedUsers();
         updatedEventList.remove(authorizedEmail);
         update.set("authorizedUsers", updatedEventList);
+
+        template.updateFirst(query, update, UserProfile.class);
+    }
+
+    @Override
+    public void addUserToGroup(UserProfile profile, String groupName) {
+        Query query = new Query(Criteria.where("profileEmail").is(profile.getProfileEmail()));
+        Update update = new Update();
+        ArrayList<String> groupsList = profile.getGroups();
+        groupsList.add(groupName);
+        update.set("groups", groupsList);
+
+        template.updateFirst(query, update, UserProfile.class);
+    }
+
+    @Override
+    public void removeUserFromGroup(UserProfile profile, String groupName) {
+        Query query = new Query(Criteria.where("profileEmail").is(profile.getProfileEmail()));
+        Update update = new Update();
+        ArrayList<String> groupsList = profile.getGroups();
+        groupsList.remove(groupName);
+        update.set("groups", groupsList);
 
         template.updateFirst(query, update, UserProfile.class);
     }

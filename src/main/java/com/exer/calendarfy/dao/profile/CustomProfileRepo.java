@@ -9,4 +9,6 @@ public interface CustomProfileRepo {
     void updateProfileWithDeviceToken(UserProfile profile, String deviceToken);
     void updateProfileWithAuthorizedEmail(UserProfile profile, String authorizedEmail);
     void deleteAuthorizedUser(UserProfile profile, String authorizedEmail);
+    void addUserToGroup(UserProfile profile, String groupName);
+    void removeUserFromGroup(UserProfile profile, String groupName);
 }
