@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AccessController {
 
@@ -23,7 +24,6 @@ public class AccessController {
     @Autowired
     ProfileCrud profileCrud;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getAuthorizedUsers")
     public ResponseEntity<ArrayList<String>> getAuthorizedUsers (
             @RequestHeader(value = "profileEmail") String profileEmail
@@ -34,7 +34,6 @@ public class AccessController {
         return ResponseEntity.status(HttpStatus.OK).body(profile.getAuthorizedUsers());
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/requestAccess")
     public ResponseEntity<HashMap<String, String>> requestAccess(
             @RequestHeader(value = "profileEmail") String profileEmail,
@@ -48,7 +47,6 @@ public class AccessController {
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/grantAccess")
     public ResponseEntity<HashMap<String, String>> grantAccess(
             @RequestHeader(value = "profileEmail") String profileEmail,
@@ -62,7 +60,6 @@ public class AccessController {
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/revokeAccess")
     public ResponseEntity<HashMap<String, String>> revokeAccess(
             @RequestHeader(value = "profileEmail") String profileEmail,

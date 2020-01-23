@@ -1,6 +1,6 @@
 package com.exer.calendarfy.profile;
 
-import com.exer.calendarfy.dao.custom.CustomProfileRepo;
+import com.exer.calendarfy.dao.profile.CustomProfileRepo;
 import com.exer.calendarfy.dao.profile.ProfileRepository;
 import com.exer.calendarfy.model.Event;
 import com.exer.calendarfy.model.UserProfile;
@@ -26,16 +26,21 @@ public class ProfileCrudImpl implements ProfileCrud {
     }
 
     @Override
-    public void addEventToProfile(String profileEmail, Event event) {
+    public boolean addEventToProfile(String requestingUser, String profileEmail, Event event) {
         UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
 
         if (profile == null) {
             Log.d("No profile found for given email, creating new profile");
             createProfileWithEvent(profileEmail, event);
-        } else {
+        } else if (checkIfUserCanEditProfile(requestingUser, profile)){
             Log.d("Adding event to profile");
             addEventToProfile(profile, event);
+        } else {
+            Log.d("User is not authorized to edit profile");
+            return false;
         }
+
+        return true;
     }
 
     @Override
@@ -57,15 +62,20 @@ public class ProfileCrudImpl implements ProfileCrud {
     }
 
     @Override
-    public void deleteEventForProfile(String profileEmail, Event event) {
+    public boolean deleteEventForProfile(String requestingUser, String profileEmail, Event event) {
         UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
 
         if (profile == null) {
             Log.d("No profile found for given email");
-        } else {
+        } else if (checkIfUserCanEditProfile(requestingUser, profile)) {
             Log.d("Removing event for profile");
             deleteEvent(profile, event);
+        } else {
+            Log.d("User is not authorized to edit profile");
+            return false;
         }
+
+        return true;
     }
 
     @Override
@@ -91,6 +101,49 @@ public class ProfileCrudImpl implements ProfileCrud {
             deleteAuthorizedUser(profile, authorizedEmail);
         }
     }
+
+    @Override
+    public boolean addUserToGroup(String requestingUser, String profileEmail, String groupName) {
+        UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
+
+        if (checkIfUserCanEditProfile(requestingUser, profile)) {
+            customProfileRepo.addUserToGroup(profile, groupName);
+        } else {
+            Log.d("User is not authorized to edit profile");
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean removeUserFromGroup(String requestingUser, String profileEmail, String groupName) {
+        UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
+
+        if (checkIfUserCanEditProfile(requestingUser, profile)) {
+            customProfileRepo.removeUserFromGroup(profile, groupName);
+        } else {
+            Log.d("User is not authorized to edit profile");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean checkIfUserCanEditProfile(String requestingUser, UserProfile profile) {
+        ArrayList<String> authorizedUsers = profile.getAuthorizedUsers();
+
+        if (profile.getProfileEmail().equals(requestingUser))
+            return true;
+
+        for (String user : authorizedUsers) {
+            if (user.equals(requestingUser))
+                return true;
+        }
+
+        return false;
+    }
+
 
     private void deleteEvent(UserProfile profile, Event eventTitle) {
         customProfileRepo.deleteEventForProfile(profile, eventTitle);

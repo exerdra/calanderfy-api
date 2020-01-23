@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class ProfileController {
 
     @Autowired
     ProfileCrud profileCrud;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/updateProfile")
     public ResponseEntity<HashMap<String, String>> registerProfile (
             @RequestHeader(value = "profileEmail") String profileEmail,
@@ -35,7 +35,6 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getAllProfiles")
     public ResponseEntity<List<UserProfile>> getAllProfile() {
         return ResponseEntity.status(HttpStatus.OK).body(profileCrud.getAllProfiles());

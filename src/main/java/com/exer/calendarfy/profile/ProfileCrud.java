@@ -7,10 +7,12 @@ import java.util.List;
 
 public interface ProfileCrud {
     UserProfile getProfileByEmail(String profileEmail);
-    void addEventToProfile(String profileEmail, Event event);
+    boolean addEventToProfile(String requestingUser, String profileEmail, Event event);
     void updateProfile(String profileEmail, String deviceToken);
     List<UserProfile> getAllProfiles();
-    void deleteEventForProfile(String profileEmail, Event event);
+    boolean deleteEventForProfile(String requestingUser, String profileEmail, Event event);
     void addAuthorizedUserForProfile(String profileEmail, String authorizedEmail);
     void deleteAuthorizedUser(String profileEmail, String authorizedEmail);
+    boolean addUserToGroup(String requestingUser, String profileEmail, String groupName);
+    boolean removeUserFromGroup(String requestingUser, String profileEmail, String groupName);
 }

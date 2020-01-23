@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class EventController {
 
@@ -25,7 +26,6 @@ public class EventController {
     @Autowired
     FCMPush fcmPush;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getEventsForProfile")
     public ResponseEntity<ArrayList<Event>> getEventsForProfile(
             @RequestHeader(value = "profileEmail") String profileEmail
@@ -42,9 +42,9 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.OK).body(profile.getProfileEvents());
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/addEventForProfile")
     public ResponseEntity<HashMap<String, String>> addEventForProfile(
+            @RequestHeader(value = "requestingUser") String requestingUser,
             @RequestHeader(value = "profileEmail") String profileEmail,
             @RequestHeader(value = "eventTitle") String eventTitle,
             @RequestHeader(value = "eventDesc") String eventDesc,
@@ -54,26 +54,31 @@ public class EventController {
         BaseResponse response = new Response();
         Event event = new Event(eventTitle, eventDesc);
 
-        profileCrud.addEventToProfile(profileEmail, event);
+        boolean success = profileCrud.addEventToProfile(requestingUser, profileEmail, event);
 
-        if (shouldSendPush != null && shouldSendPush) {
-            UserProfile profile = profileCrud.getProfileByEmail(profileEmail);
+        if (success) {
+            response.setIsSuccessful(true);
+            if (shouldSendPush != null && shouldSendPush ) {
+                UserProfile profile = profileCrud.getProfileByEmail(profileEmail);
 
-            if (profile != null && profile.getDeviceToken() != null) {
-                PushRequest request = new PushRequest(profile.getDeviceToken(), event);
-                fcmPush.sendPushToSender(request);
-            } else {
-                Log.d("Unable to send push as profile does not exist or device token is null");
+                if (profile != null && profile.getDeviceToken() != null) {
+                    PushRequest request = new PushRequest(profile.getDeviceToken(), event);
+                    fcmPush.sendPushToSender(request);
+                } else {
+                    Log.d("Unable to send push as profile does not exist or device token is null");
+                }
             }
+        } else {
+            response.setIsSuccessful(false);
+            response.addResponseHeader("error", "user is not allowed to edit profile");
         }
 
-        response.setIsSuccessful(true);
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/deleteEventForProfile")
     public ResponseEntity<HashMap<String, String>> deleteEventForProfile(
+            @RequestHeader(value = "requestingUser") String requestingUser,
             @RequestHeader(value = "profileEmail") String profileEmail,
             @RequestHeader(value = "eventTitle") String eventTitle,
             @RequestHeader(value = "eventDesc") String eventDesc
@@ -83,9 +88,15 @@ public class EventController {
         BaseResponse response = new Response();
         Event event = new Event(eventTitle, eventDesc);
 
-        profileCrud.deleteEventForProfile(profileEmail, event);
+        boolean success = profileCrud.deleteEventForProfile(requestingUser, profileEmail, event);
 
-        response.setIsSuccessful(true);
+        if (success) {
+            response.setIsSuccessful(true);
+        } else {
+            response.setIsSuccessful(false);
+            response.addResponseHeader("error", "user is not allowed to edit profile");
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
 }

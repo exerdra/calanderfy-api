@@ -16,6 +16,8 @@ public class UserProfile {
     private ArrayList<String> authorizedUsers = new ArrayList<>();
     private String deviceToken;
 
+    private ArrayList<String> groups = new ArrayList<>();
+
     public UserProfile(String profileEmail, ArrayList<Event> profileEvents) {
         this.profileEmail = profileEmail;
         this.profileEvents = profileEvents;
@@ -55,5 +57,13 @@ public class UserProfile {
 
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    public void addUserToGroup(String groupName) {
+        groups.add(groupName);
+    }
+
+    public ArrayList<String> getGroups(){
+        return this.groups;
     }
 }

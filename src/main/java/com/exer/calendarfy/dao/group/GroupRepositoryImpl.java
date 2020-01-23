@@ -1,4 +1,3 @@
 package com.exer.calendarfy.dao.group;
 
-public class GroupRepositoryImpl {
-}
+public abstract class GroupRepositoryImpl implements GroupRepository { }

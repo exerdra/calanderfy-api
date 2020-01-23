@@ -1,4 +1,4 @@
-package com.exer.calendarfy.dao.custom;
+package com.exer.calendarfy.dao.profile;
 
 import com.exer.calendarfy.model.Event;
 import com.exer.calendarfy.model.UserProfile;
