@@ -13,7 +13,7 @@ import java.lang.management.RuntimeMXBean;
 import java.util.HashMap;
 
 @RestController
-public class CalanderfyController {
+public class CalendarfyController {
 
     @RequestMapping("/healthcheck")
     public ResponseEntity<HashMap<String, String>> healthcheck() {

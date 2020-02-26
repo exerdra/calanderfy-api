@@ -14,6 +14,6 @@ public interface ProfileCrud {
     boolean deleteEventForProfile(String requestingUser, String profileEmail, Event event);
     void addAuthorizedUserForProfile(String profileEmail, String authorizedEmail);
     void deleteAuthorizedUser(String profileEmail, String authorizedEmail);
-    boolean addUserToGroup(String requestingUser, String profileEmail, String groupName);
+    boolean addUserToGroup(String requestingUser, String profileEmail, String groupName, Boolean ignoreCanEdit);
     boolean removeUserFromGroup(String requestingUser, String profileEmail, String groupName);
 }

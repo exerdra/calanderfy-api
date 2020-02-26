@@ -70,7 +70,7 @@ public class EventController {
             }
         } else {
             response.setIsSuccessful(false);
-            response.addResponseHeader("error", "user is not allowed to edit profile");
+            response.addResponseHeader("error", "user not allowed to edit profiles");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
@@ -94,7 +94,7 @@ public class EventController {
             response.setIsSuccessful(true);
         } else {
             response.setIsSuccessful(false);
-            response.addResponseHeader("error", "user is not allowed to edit profile");
+            response.addResponseHeader("error", "user not allowed to edit profile");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());

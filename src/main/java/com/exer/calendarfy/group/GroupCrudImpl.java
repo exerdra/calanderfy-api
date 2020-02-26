@@ -38,7 +38,7 @@ public class GroupCrudImpl implements GroupCrud {
 
             groupRepository.insert(group);
 
-            profileCrud.addUserToGroup(creator, creator, groupName);
+            profileCrud.addUserToGroup(creator, creator, groupName, true);
 
             return true;
         }
@@ -92,7 +92,7 @@ public class GroupCrudImpl implements GroupCrud {
         }
 
         customGroupRepo.addUserToGroup(group, profileEmail);
-        profileCrud.addUserToGroup(profileEmail, profileEmail, groupName);
+        profileCrud.addUserToGroup(profileEmail, profileEmail, groupName, true);
 
         return true;
     }
@@ -108,6 +108,28 @@ public class GroupCrudImpl implements GroupCrud {
 
         customGroupRepo.removeUserFromGroup(group, profileEmail);
         profileCrud.removeUserFromGroup(profileEmail, profileEmail, groupName);
+
+        return true;
+    }
+
+    @Override
+    public boolean deleteGroup(String profileEmail, String groupName) {
+        Group group = groupRepository.findFirstByGroupName(groupName);
+
+        if (group == null) {
+            Log.d("Group does not exist");
+            return false;
+        }
+
+        for (String user : group.getGroupUsers()) {
+            if (user.equals(profileEmail)) {
+                groupRepository.delete(group);
+                break;
+            } else {
+                Log.d("User does not have permission to edit group");
+                return false;
+            }
+        }
 
         return true;
     }

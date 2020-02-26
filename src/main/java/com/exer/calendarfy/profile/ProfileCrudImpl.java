@@ -118,14 +118,18 @@ public class ProfileCrudImpl implements ProfileCrud {
     }
 
     @Override
-    public boolean addUserToGroup(String requestingUser, String profileEmail, String groupName) {
+    public boolean addUserToGroup(String requestingUser, String profileEmail, String groupName, Boolean ignoreCanEdit) {
         UserProfile profile = profileRepository.findFirstByProfileEmail(profileEmail);
 
-        if (checkIfUserCanEditProfile(requestingUser, profile)) {
+        if (ignoreCanEdit) {
             customProfileRepo.addUserToGroup(profile, groupName);
         } else {
-            Log.d("User is not authorized to edit profile");
-            return false;
+            if (checkIfUserCanEditProfile(requestingUser, profile)) {
+                customProfileRepo.addUserToGroup(profile, groupName);
+            } else {
+                Log.d("User not authorized to edit profile");
+                return false;
+            }
         }
 
         return true;
@@ -138,7 +142,7 @@ public class ProfileCrudImpl implements ProfileCrud {
         if (checkIfUserCanEditProfile(requestingUser, profile)) {
             customProfileRepo.removeUserFromGroup(profile, groupName);
         } else {
-            Log.d("User is not authorized to edit profile");
+            Log.d("User not authorized to edit profile");
             return false;
         }
 

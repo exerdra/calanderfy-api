@@ -13,4 +13,5 @@ public interface GroupCrud {
     boolean removeEventFromGroup(String groupName, Event event);
     boolean addUserToGroup(String profileEmail, String groupName);
     boolean removeUserFromGroup(String profileEmail, String groupName);
+    boolean deleteGroup(String profileEmail, String groupName);
 }

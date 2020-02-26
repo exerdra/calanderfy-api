@@ -32,7 +32,7 @@ public class ProfileController {
 
         if (success) {
             response.setIsSuccessful(true);
-            response.addResponseHeader("success", "profile was created");
+            response.addResponseHeader("success", "profile created");
 
             return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
         }

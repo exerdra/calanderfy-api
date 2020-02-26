@@ -1,10 +1,7 @@
 package com.exer.calendarfy.controller;
 
-
 import com.exer.calendarfy.group.GroupCrud;
 import com.exer.calendarfy.model.Event;
-import com.exer.calendarfy.model.Group;
-import com.exer.calendarfy.profile.ProfileCrud;
 import com.exer.calendarfy.response.BaseResponse;
 import com.exer.calendarfy.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +44,29 @@ public class GroupController {
         }
 
         response.setIsSuccessful(true);
-        response.addResponseHeader("success", "group was created");
+        response.addResponseHeader("success", "group created with name " + groupName);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
+    }
+
+    @PostMapping("/deleteGroup")
+    public ResponseEntity<HashMap<String, String>> deleteGroup (
+            @RequestHeader(value = "groupName") String groupName,
+            @RequestHeader(value = "profileEmail") String profileEmail
+    ) {
+        BaseResponse response = new Response();
+
+        boolean success = groupCrud.deleteGroup(profileEmail, groupName);
+
+        if (!success) {
+            response.setIsSuccessful(false);
+            response.addResponseHeader("error", "you do not have permission to edit this group");
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response.getResponse());
+        }
+
+        response.setIsSuccessful(true);
+        response.addResponseHeader("success", "group deleted with name " + groupName);
 
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
@@ -63,13 +82,13 @@ public class GroupController {
 
         if (!success) {
             response.setIsSuccessful(false);
-            response.addResponseHeader("error", "group does not exists");
+            response.addResponseHeader("error", "group does not exist");
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.getResponse());
         }
 
         response.setIsSuccessful(true);
-        response.addResponseHeader("success", "user was added to group");
+        response.addResponseHeader("success", "user added to group");
 
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
@@ -85,13 +104,13 @@ public class GroupController {
 
         if (!success) {
             response.setIsSuccessful(false);
-            response.addResponseHeader("error", "group does not exists");
+            response.addResponseHeader("error", "group does not exist");
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.getResponse());
         }
 
         response.setIsSuccessful(true);
-        response.addResponseHeader("success", "user was removed from group");
+        response.addResponseHeader("success", "user removed from group");
 
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
@@ -115,7 +134,7 @@ public class GroupController {
         }
 
         response.setIsSuccessful(true);
-        response.addResponseHeader("success", "event was added to group");
+        response.addResponseHeader("success", "event added to group");
 
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }
@@ -133,13 +152,13 @@ public class GroupController {
 
         if (!success) {
             response.setIsSuccessful(false);
-            response.addResponseHeader("error", "group does not exists");
+            response.addResponseHeader("error", "group does not exist");
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.getResponse());
         }
 
         response.setIsSuccessful(true);
-        response.addResponseHeader("success", "event was removed from group");
+        response.addResponseHeader("success", "event removed from group");
 
         return ResponseEntity.status(HttpStatus.OK).body(response.getResponse());
     }

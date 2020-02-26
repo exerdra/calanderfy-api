@@ -4,10 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CalanderfyApplication {
+public class CalendarfyApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CalanderfyApplication.class, args);
+		SpringApplication.run(CalendarfyApplication.class, args);
 	}
-
-}
+}c
