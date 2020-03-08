@@ -12,6 +12,8 @@ public class Group {
 
     private String groupName;
 
+    private String groupOwner;
+
     private ArrayList<String> groupUsers = new ArrayList<>();
 
     private ArrayList<Event> groupEvents = new ArrayList<>();
@@ -38,5 +40,13 @@ public class Group {
 
     public void setGroupEvents(ArrayList<Event> groupEvents) {
         this.groupEvents = groupEvents;
+    }
+
+    public String getGroupOwner() {
+        return groupOwner;
+    }
+
+    public void setGroupOwner(String groupOwner) {
+        this.groupOwner = groupOwner;
     }
 }

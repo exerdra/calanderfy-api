@@ -169,4 +169,11 @@ public class GroupController {
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(groupCrud.getGroupByGroupName(groupName).getGroupUsers());
     }
-}
+
+    @GetMapping("/getGroupOwner")
+    public ResponseEntity<String> getGroupOwner(
+            @RequestHeader(value = "groupName") String groupName
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(groupCrud.getGroupByGroupName(groupName).getGroupOwner());
+    }
+ }

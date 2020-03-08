@@ -34,6 +34,7 @@ public class GroupCrudImpl implements GroupCrud {
             ArrayList<String> users = new ArrayList<>();
             users.add(creator);
 
+            group.setGroupOwner(creator);
             group.setGroupName(groupName);
             group.setGroupUsers(users);
 
